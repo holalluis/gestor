@@ -1,6 +1,39 @@
 <!doctype html><html><head>
 	<meta charset=utf8>
 	<title>Càlcul corrosió</title>
+	<script>
+		function init(){
+			in_out();
+		}
+
+		function in_out() {
+			//llegeix inputs i escriu output
+			var H2S = parseFloat(document.querySelector('#H2S').value);
+			var H = parseFloat(document.querySelector('#H').value);
+			var T = parseFloat(document.querySelector('#T').value);
+			var C = calcula_corrosio(H2S,H,T);
+			document.querySelector('#resultat').innerHTML=format(C,10);//6 decimals
+		}
+
+		/*
+			H2S: concentracio H2S (ppm)
+			H: humitat relativa (-)
+			T: temperatura (K)
+		*/
+		function calcula_corrosio(H2S,H,T) {
+			var A = 207750; // unitless
+			var R = 8.314472;  // J/(K·mol)
+			var corrosio = A * Math.sqrt(H2S) * ((0.1602*H-0.1355)/(1-0.977*H)) * Math.exp(-45000/(R*T));
+			return corrosio;
+		}
+
+		/* return 3.999,4 instead of 3999.4 */
+		function format(number,decimals) {
+			decimals=decimals||2;
+			var str=new Intl.NumberFormat('en-EN',{maximumFractionDigits:decimals}).format(number);
+			return str;
+		}
+	</script>
 	<style>
 		#root {
 			padding-left:10px;
@@ -28,44 +61,13 @@
 			font-size:32px;
 			padding:1em 0;
 		}
+		#formula {
+			border:1px solid #ccc;
+			padding:2px;
+		}
 	</style>
 </head><body onload=init()>
 <h1>Càlcul corrosió</h1>
-
-<script>
-	function init(){
-		in_out();
-	}
-
-	function in_out() {
-		//llegeix inputs i escriu output
-		var H2S = parseFloat(document.querySelector('#H2S').value);
-		var H = parseFloat(document.querySelector('#H').value);
-		var T = parseFloat(document.querySelector('#T').value);
-		var C = calcula_corrosio(H2S,H,T);
-		document.querySelector('#resultat').innerHTML=format(C,10);//6 decimals
-	}
-
-	function calcula_corrosio(H2S,H,T) {
-		/*
-			H2S: concentracio H2S (ppm)
-			H: humitat relativa (-)
-			T: temperatura (K)
-		*/
-		var A = 207750; // unitless
-		var R = 8.314472;  // J/(K·mol)
-		var corrosio = A * Math.sqrt(H2S) * ((0.1602*H-0.1355)/(1-0.977*H)) * Math.exp(-45000/(R*T));
-		return corrosio;
-	}
-
-	/** return 3.999,4 instead of 3999.4*/
-	function format(number,decimals)
-	{
-		decimals=decimals||2;
-		var str=new Intl.NumberFormat('en-EN',{maximumFractionDigits:decimals}).format(number);
-		return str;
-	}
-</script>
 
 <div id=root>
 
@@ -90,9 +92,12 @@
 	</div>
 </div>
 
-<div>
-	Fórmula:
-	C = A·[H<sub>2</sub>S]^0.5 · (0.1602·H-0.1355)/(1-0.977·H) · e^(-45000/(R·T))
+<div id=formula>
+	<div> Fórmula: </div>
+	<div style="background:#eee">
+		C = A·[H<sub>2</sub>S]<sup>0.5</sup> · (0.1602·H-0.1355)/(1-0.977·H) · e<sup>(-45000/(R·T))</sup>
+	</div>
+	<div> on: </div>
 	<ul>
 		<li>C: corrosió (mm/any)
 		<li>A: 207750 constant empírica (no unitat)
@@ -104,4 +109,3 @@
 </div>
 
 </div>
-
