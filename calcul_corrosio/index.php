@@ -67,6 +67,7 @@
 		}
 	</style>
 </head><body onload=init()>
+
 <h1>Càlcul corrosió</h1>
 
 <div id=root>
@@ -108,4 +109,9 @@
 	</ul>
 </div>
 
+<hr>
+
+<img src="img/canonada_corrosio.jpg">
+
 </div>
+
